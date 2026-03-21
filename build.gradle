@@ -44,7 +44,7 @@ shadowJar {
     if (includeOshi) {
         relocate 'oshi', 'com.korphere.mcomnisight.libs.oshi'
         relocate 'com.sun.jna', 'com.korphere.mcomnisight.libs.jna'
-        archiveClassifier.set('full')
+        archiveClassifier.set('')
     } else {
         archiveClassifier.set('lite')
     }

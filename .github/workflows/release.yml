@@ -25,13 +25,17 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Build Lite edition
+        run: ./gradlew shadowJar
+
+      - name: Build Full edition
+        run: ./gradlew shadowJar -Poshi
 
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v2
         with:
+          # build/libs 内にある全ての JAR をリリースに添付
           files: build/libs/*.jar
           name: Release ${{ github.ref_name }}
           body: |
@@ -39,11 +43,12 @@ jobs:
             
             MCOmniSight の最新リリースです。
             
-            ### 🛠 修正・追加内容
-            - 初回安定版リリース
+            ### 📦 配布物の選び方
+            - **MCOmniSight-1.0.0-full.jar**: 推奨版。CPU/GPU/ディスク等の詳細な統計が利用可能です。
+            - **MCOmniSight-1.0.0-lite.jar**: 軽量版。OSの詳細統計は不要で、チャットや参加ログのみ利用したい場合に使用します。
             
-            ### 📦 配布物
-            - `MCOmniSight-x.x.x.jar` をサーバーの plugins フォルダに入れてください。
+            ### 🛠 修正・追加内容
+            - 初回安定版リリース (Lite & Full 双対応)
           draft: false
           prerelease: false
         env:
