@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>MCOmniSight OBS Overlay</title>
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif; /* OBSで使用するフォントに合わせて変更可 */
+            color: #fff;
+            margin: 0;
+            padding: 10px;
+            overflow: hidden; /* スクロールバーを隠す */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8); /* 視認性向上のための影 */
+            background: rgba(0,0,0,0); /* 背景を透明に */
+        }
+
+        .overlay-container {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-weight: bold;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px; /* OBSのソース解像度に合わせて調整 */
+        }
+
+        .stat-value {
+            color: #2ecc71; /* Green */
+        }
+
+        .stat-label {
+            color: #eee;
+        }
+
+        /* 状況に応じて色を変える例 */
+        .low-tps { color: #e74c3c !important; } /* Red */
+        .mid-tps { color: #f1c40f !important; } /* Yellow */
+    </style>
+</head>
+<body>
+<div class="overlay-container">
+    <div class="stat-item">
+        <span class="stat-label">TPS:</span>
+        <span id="tps-value" class="stat-value">--.-</span>
+    </div>
+
+    <div class="stat-item">
+        <span class="stat-label">Online:</span>
+        <span id="players-value" class="stat-value">--</span>
+    </div>
+
+    <div class="stat-item" id="temp-item" style="display: none;">
+        <span class="stat-label">CPU Temp:</span>
+        <span id="temp-value" class="stat-value">--</span><span class="stat-label">°C</span>
+    </div>
+</div>
+
+<script>
+    // --- Configuration (OBSのソース設定でURLにパラメータを追加してもOK) ---
+    const WS_URL = 'ws://localhost:8887'; // MCOmniSight Server URL
+    const API_KEY = 'your-secret-key-here'; // MCOmniSight API Key
+
+    // --- DOM Elements ---
+    const tpsSpan = document.getElementById('tps-value');
+    const playersSpan = document.getElementById('players-value');
+    const tempItem = document.getElementById('temp-item');
+    const tempSpan = document.getElementById('temp-value');
+
+    // --- WebSocket Connection ---
+    const ws = new WebSocket(`${WS_URL}/?key=${API_KEY}`);
+
+    ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+
+        if (data.type === 'STATUS') {
+            // 1. Process standard feature data
+            if (data.features && data.features.standard) {
+                const std = data.features.standard;
+                playersSpan.textContent = std.online_players;
+            }
+
+            // 2. Process performance data (TPS)
+            if (data.features && data.features.performance) {
+                const perf = data.features.performance;
+                const tps = parseFloat(perf.tps);
+
+                tpsSpan.textContent = tps.toFixed(1);
+
+                // TPSの色を状況に応じて変える
+                if (tps < 15) { tpsSpan.className = 'stat-value low-tps'; }
+                else if (tps < 18) { tpsSpan.className = 'stat-value mid-tps'; }
+                else { tpsSpan.className = 'stat-value'; }
+            }
+
+            // 3. Process CPU Temperature (Optional)
+            if (data.features && data.features.host_status && data.features.host_status.cpu_temperature) {
+                const host = data.features.host_status;
+                const temp = host.cpu_temperature;
+
+                if (temp > 0) {
+                    tempItem.style.display = 'flex'; // 有効な温度があれば表示
+                    tempSpan.textContent = Math.round(temp);
+                }
+            }
+        }
+    };
+
+    ws.onerror = (error) => {
+        // OBSのログにも出力されます
+        console.error('MCOmniSight OBS Overlay Error:', error);
+        tpsSpan.textContent = 'ERROR';
+    };
+</script>
+</body>
+</html>

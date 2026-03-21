@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>MCOmniSight Simple Monitor</title>
+    <style>
+        body { font-family: monospace; background: #222; color: #eee; padding: 20px; }
+        #status { font-weight: bold; margin-bottom: 10px; }
+        .connected { color: #0f0; }
+        .disconnected { color: #f00; }
+        #log { background: #333; padding: 10px; height: 400px; overflow-y: scroll; border: 1px solid #555; }
+        .log-entry { margin-bottom: 5px; border-bottom: 1px solid #444; padding-bottom: 5px; }
+        .log-timestamp { color: #aaa; }
+    </style>
+</head>
+<body>
+<h1>MCOmniSight Simple Monitor</h1>
+<div id="status">Status: <span id="status-text" class="disconnected">Disconnected</span></div>
+
+<div>
+    <label for="ws-url">WebSocket URL: </label>
+    <input type="text" id="ws-url" value="ws://localhost:8887" style="width: 300px;">
+    <label for="api-key">API Key: </label>
+    <input type="password" id="api-key" value="your-secret-key-here">
+    <button id="connect-btn">Connect</button>
+</div>
+
+<h2>Live Data Log (Last 50 entries)</h2>
+<div id="log"></div>
+
+<script>
+    const statusText = document.getElementById('status-text');
+    const logDiv = document.getElementById('log');
+    const connectBtn = document.getElementById('connect-btn');
+    const urlInput = document.getElementById('ws-url');
+    const keyInput = document.getElementById('api-key');
+
+    let ws;
+
+    connectBtn.addEventListener('click', () => {
+        if (ws) ws.close();
+
+        const url = `${urlInput.value}/?key=${keyInput.value}`;
+        ws = new WebSocket(url);
+
+        ws.onopen = () => {
+            statusText.textContent = 'Connected';
+            statusText.className = 'connected';
+            logDiv.innerHTML = ''; // Clear log
+            addLogEntry('System', 'Connected to MCOmniSight Server');
+        };
+
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            addLogEntry(data.type || 'DATA', JSON.stringify(data, null, 2));
+        };
+
+        ws.onclose = (event) => {
+            statusText.textContent = `Disconnected (Code: ${event.code})`;
+            statusText.className = 'disconnected';
+            addLogEntry('System', `Disconnected. Reason: ${event.reason || 'Unknown'}`);
+        };
+
+        ws.onerror = (error) => {
+            addLogEntry('Error', 'WebSocket Error. Check console.');
+            console.error('WebSocket Error:', error);
+        };
+    });
+
+    function addLogEntry(type, message) {
+        const entry = document.createElement('div');
+        entry.className = 'log-entry';
+        const timestamp = new Date().toLocaleTimeString();
+
+        entry.innerHTML = `<span class="log-timestamp">[${timestamp}]</span> <strong>[${type}]</strong><br><pre>${message}</pre>`;
+
+        logDiv.prepend(entry); // Add to top
+
+        // Limit log entries
+        while (logDiv.childNodes.length > 50) {
+            logDiv.removeChild(logDiv.lastChild);
+        }
+    }
+</script>
+</body>
+</html>

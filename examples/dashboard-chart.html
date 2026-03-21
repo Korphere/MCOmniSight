@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>MCOmniSight Performance Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: sans-serif; background: #1a1a1a; color: #fff; padding: 20px; }
+        .chart-container { width: 80%; margin: 20px auto; background: #2a2a2a; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        h1, h2 { text-align: center; }
+        #connection-status { text-align: center; font-weight: bold; margin-bottom: 20px; }
+        .connected { color: #2ecc71; }
+        .disconnected { color: #e74c3c; }
+    </style>
+</head>
+<body>
+<h1>MCOmniSight Performance Dashboard</h1>
+<div id="connection-status">Status: <span class="disconnected">Disconnected</span></div>
+
+<div class="chart-container">
+    <h2>CPU & Memory Usage (%)</h2>
+    <canvas id="perfChart"></canvas>
+</div>
+
+<script>
+    // --- Configuration ---
+    const WS_URL = 'ws://localhost:8887'; // MCOmniSight Server URL
+    const API_KEY = 'your-secret-key-here'; // MCOmniSight API Key
+    const MAX_DATA_POINTS = 60; // Show last 60 seconds (assuming 1s update)
+
+    // --- Chart Setup ---
+    const ctx = document.getElementById('perfChart').getContext('2d');
+    const perfChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [], // Timestamps
+            datasets: [{
+                label: 'CPU Load (%)',
+                data: [],
+                borderColor: 'rgba(52, 152, 219, 1)', // Blue
+                backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                borderWidth: 2,
+                tension: 0.4,
+                fill: true
+            }, {
+                label: 'Memory Usage (%)',
+                data: [],
+                borderColor: 'rgba(46, 204, 113, 1)', // Green
+                backgroundColor: 'rgba(46, 204, 113, 0.2)',
+                borderWidth: 2,
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    title: { display: true, text: 'Time' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                },
+                y: {
+                    title: { display: true, text: 'Usage (%)' },
+                    min: 0,
+                    max: 100,
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                }
+            },
+            plugins: {
+                legend: { labels: { color: '#fff' } }
+            }
+        }
+    });
+
+    // --- WebSocket Connection ---
+    const statusSpan = document.querySelector('#connection-status span');
+    const ws = new WebSocket(`${WS_URL}/?key=${API_KEY}`);
+
+    ws.onopen = () => {
+        statusSpan.textContent = 'Connected';
+        statusSpan.className = 'connected';
+        console.log('Connected to MCOmniSight');
+    };
+
+    ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+
+        // 1. Check for standard performance data
+        if (data.type === 'STATUS' && data.features && data.features.performance) {
+            const perf = data.features.performance;
+
+            // 2. Check for host status data (for Memory %)
+            if (data.features.host_status) {
+                const host = data.features.host_status;
+                const memUsedPercent = ((host.mem_total - host.mem_available) / host.mem_total) * 100;
+
+                updateChart(host.cpu_load, memUsedPercent);
+            }
+        }
+    };
+
+    ws.onclose = () => {
+        statusSpan.textContent = 'Disconnected';
+        statusSpan.className = 'disconnected';
+        console.log('Disconnected from MCOmniSight');
+    };
+
+    ws.onerror = (error) => {
+        console.error('WebSocket Error:', error);
+    };
+
+    // --- Update Chart Logic ---
+    function updateChart(cpuLoad, memUsage) {
+        const timestamp = new Date().toLocaleTimeString();
+
+        // Add new data
+        perfChart.data.labels.push(timestamp);
+        perfChart.data.datasets[0].data.push(cpuLoad);
+        perfChart.data.datasets[1].data.push(memUsage);
+
+        // Remove old data to keep graph clean
+        if (perfChart.data.labels.length > MAX_DATA_POINTS) {
+            perfChart.data.labels.shift();
+            perfChart.data.datasets[0].data.shift();
+            perfChart.data.datasets[1].data.shift();
+        }
+
+        // Redraw chart
+        perfChart.update('none'); // Update without animation for performance
+    }
+</script>
+</body>
+</html>

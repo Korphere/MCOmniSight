@@ -1,0 +1,18 @@
+name: MCOmniSight
+version: '1.0.0'
+main: com.korphere.mcomnisight.MCOmniSight
+api-version: '1.21'
+load: STARTUP
+authors: [KoHaRxnP, Korphere]
+description: Let's watch Real-time server status.
+
+commands:
+  omnisight:
+    description: MCOmniSight main command
+    permission: omnisight.admin
+    usage: /<command> [reload|status]
+
+permissions:
+  omnisight.admin:
+    description: Allows administrative access to MCOmniSight
+    default: op

@@ -1,0 +1,89 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        // Shadow Plugin が内部で使用する ASM を Java 21 対応版に強制
+        classpath 'org.ow2.asm:asm:9.6'
+        classpath 'org.ow2.asm:asm-commons:9.6'
+    }
+}
+
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id("xyz.jpenilla.run-paper") version "2.3.1"
+}
+
+group = 'com.korphere.mcomnisight'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "papermc-repo"
+        url = "https://repo.papermc.io/repository/maven-public/"
+    }
+}
+
+def includeOshi = project.hasProperty('oshi')
+
+dependencies {
+    compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
+    implementation 'org.java-websocket:Java-WebSocket:1.5.3'
+    compileOnly 'com.github.oshi:oshi-core:6.6.1'
+    if (includeOshi) {
+        implementation 'com.github.oshi:oshi-core:6.6.1'
+        implementation 'net.java.dev.jna:jna:5.13.0'
+        implementation 'net.java.dev.jna:jna-platform:5.13.0'
+    }
+}
+
+shadowJar {
+    relocate 'org.java_websocket', 'com.korphere.mcomnisight.libs.websocket'
+    if (includeOshi) {
+        relocate 'oshi', 'com.korphere.mcomnisight.libs.oshi'
+        relocate 'com.sun.jna', 'com.korphere.mcomnisight.libs.jna'
+        archiveClassifier.set('full')
+    } else {
+        archiveClassifier.set('lite')
+    }
+}
+
+tasks.build.dependsOn shadowJar
+
+tasks {
+  runServer {
+    // Configure the Minecraft version for our task.
+    // This is the only required configuration besides applying the plugin.
+    // Your plugin's jar (or shadowJar if present) will be used automatically.
+    minecraftVersion("1.21")
+  }
+}
+
+def targetJavaVersion = 21
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release.set(targetJavaVersion)
+    }
+}
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}
