@@ -1,5 +1,5 @@
 name: MCOmniSight
-version: '1.0.0'
+version: '2.0.0'
 main: com.korphere.mcomnisight.MCOmniSight
 api-version: '1.21'
 load: STARTUP

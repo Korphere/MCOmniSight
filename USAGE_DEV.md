@@ -9,23 +9,24 @@ MCOmniSight の WebSocket からデータを取得し、外部ツールを作成
 - **データ形式**: JSON (UTF-8)
 
 ## 2. データ型 (Message Types)
-受信する全ての JSON データには `type` フィールドが含まれます。
+受信する全ての JSON データには `packet_type` フィールドが含まれます。
 
 ### A. FULL_DATA
 接続成功直後に送信される、現在のサーバーの完全なスナップショットです。
-- `type`: "FULL_DATA"
+- `packet_type`: "FULL_DATA"
 - `data`: サーバーの基本情報、現在の全プレイヤーリスト、OS 統計の初期値。
 
-### B. STATUS
+### B. DELTA
 設定されたインターバル（デフォルト 1 秒）ごとに送信される動的データです。
-- `type`: "STATUS"
+前回のデータから変化があった差分のみが含まれます。
+- `packet_type`: "DELTA"
 - `features`:
     - `performance`: TPS, MSPT, Memory 使用率。
     - `host_status`: CPU Load, Disk I/O, Network 通信量。
 
 ### C. EVENT
 サーバー内で特定の動きがあった瞬間に送信されるリアルタイム通知です。
-- `type`: "EVENT"
+- `packet_type`: "EVENT"
 - `event_type`: イベントの種類（例: `PLAYER_CHAT`, `PLAYER_JOIN`, `PLAYER_PRE_LOGIN`）
 - `payload`: 各イベント固有のデータ（プレイヤー名、UUID、メッセージ内容等）
 

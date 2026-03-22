@@ -36,38 +36,41 @@ public class OmniSightEventListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onJoin(@NotNull PlayerJoinEvent event) {
         if (!plugin.getConfig().getBoolean(path + "player_join", false)) return;
-        JsonObject packet = EventProvider.createEventPacket("PLAYER_JOIN",
-                event.getPlayer().getName() + "が参加しました");
-        packet.addProperty("player", event.getPlayer().getName());
-        packet.addProperty("uuid", event.getPlayer().getUniqueId().toString());
-        packet.addProperty("display_name", plainSerializer.serialize(event.getPlayer().displayName()));
-        packet.addProperty("world", event.getPlayer().getWorld().getName());
+        JsonObject packet = EventProvider.createEventPacket("PLAYER_JOIN");
+        JsonObject payload = packet.getAsJsonObject("payload");
+        payload.addProperty("message", event.getPlayer().getName() + "が参加しました");
+        payload.addProperty("player", event.getPlayer().getName());
+        payload.addProperty("uuid", event.getPlayer().getUniqueId().toString());
+        payload.addProperty("display_name", plainSerializer.serialize(event.getPlayer().displayName()));
+        payload.addProperty("world", event.getPlayer().getWorld().getName());
         dispatch("player_join", packet);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onQuit(@NotNull PlayerQuitEvent event) {
         if (!plugin.getConfig().getBoolean(path + "player_quit", false)) return;
-        JsonObject packet = EventProvider.createEventPacket("PLAYER_QUIT",
-                event.getPlayer().getName() + "が退出しました");
-        packet.addProperty("player", event.getPlayer().getName());
-        packet.addProperty("uuid", event.getPlayer().getUniqueId().toString());
-        packet.addProperty("display_name", plainSerializer.serialize(event.getPlayer().displayName()));
-        packet.addProperty("world", event.getPlayer().getWorld().getName());
-        packet.addProperty("reason", event.getReason().name());
+        JsonObject packet = EventProvider.createEventPacket("PLAYER_QUIT");
+        JsonObject payload = packet.getAsJsonObject("payload");
+        payload.addProperty("message", event.getPlayer().getName() + "が退出しました");
+        payload.addProperty("player", event.getPlayer().getName());
+        payload.addProperty("uuid", event.getPlayer().getUniqueId().toString());
+        payload.addProperty("display_name", plainSerializer.serialize(event.getPlayer().displayName()));
+        payload.addProperty("world", event.getPlayer().getWorld().getName());
+        payload.addProperty("reason", event.getReason().name());
         dispatch("player_quit", packet);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onAnimation(@NotNull PlayerAnimationEvent event) {
         if (!plugin.getConfig().getBoolean(path + "player_animation", false)) return;
-        JsonObject packet = EventProvider.createEventPacket("PLAYER_ANIMATION",
-                event.getPlayer().getName() + "がアクションを実行しました");
-        packet.addProperty("player", event.getPlayer().getName());
-        packet.addProperty("uuid", event.getPlayer().getUniqueId().toString());
-        packet.addProperty("display_name", plainSerializer.serialize(event.getPlayer().displayName()));
-        packet.addProperty("world", event.getPlayer().getWorld().getName());
-        packet.addProperty("anim_type", event.getAnimationType().name());
+        JsonObject packet = EventProvider.createEventPacket("PLAYER_ANIMATION");
+        JsonObject payload = packet.getAsJsonObject("payload");
+        payload.addProperty("message", event.getPlayer().getName() + "がアクションを実行しました");
+        payload.addProperty("player", event.getPlayer().getName());
+        payload.addProperty("uuid", event.getPlayer().getUniqueId().toString());
+        payload.addProperty("display_name", plainSerializer.serialize(event.getPlayer().displayName()));
+        payload.addProperty("world", event.getPlayer().getWorld().getName());
+        payload.addProperty("anim_type", event.getAnimationType().name());
 
         dispatch("player_animation", packet);
     }
@@ -75,12 +78,13 @@ public class OmniSightEventListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onChat(@NotNull AsyncChatEvent event) {
         if (!plugin.getConfig().getBoolean(path + "player_chat", false)) return;
-        JsonObject packet = EventProvider.createEventPacket("PLAYER_CHAT",
-                PlainTextComponentSerializer.plainText().serialize(event.message()));
-        packet.addProperty("player", event.getPlayer().getName());
-        packet.addProperty("uuid", event.getPlayer().getUniqueId().toString());
-        packet.addProperty("display_name", plainSerializer.serialize(event.getPlayer().displayName()));
-        packet.addProperty("world", event.getPlayer().getWorld().getName());
+        JsonObject packet = EventProvider.createEventPacket("PLAYER_CHAT");
+        JsonObject payload = packet.getAsJsonObject("payload");
+        payload.addProperty("message", PlainTextComponentSerializer.plainText().serialize(event.message()));
+        payload.addProperty("player", event.getPlayer().getName());
+        payload.addProperty("uuid", event.getPlayer().getUniqueId().toString());
+        payload.addProperty("display_name", plainSerializer.serialize(event.getPlayer().displayName()));
+        payload.addProperty("world", event.getPlayer().getWorld().getName());
 
         dispatch("player_chat", packet);
     }
@@ -88,12 +92,13 @@ public class OmniSightEventListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPreLogin(@NotNull AsyncPlayerPreLoginEvent event) {
         if (!plugin.getConfig().getBoolean(path + "player_pre_login", false)) return;
-        JsonObject packet = EventProvider.createEventPacket("PLAYER_PRE_LOGIN",
-                event.getName() + "が接続を試行しています");
-        packet.addProperty("player", event.getName());
-        packet.addProperty("uuid", event.getUniqueId().toString());
-        packet.addProperty("ip_address", event.getAddress().getHostAddress());
-        packet.addProperty("result", event.getLoginResult().name());
+        JsonObject packet = EventProvider.createEventPacket("PLAYER_PRE_LOGIN");
+        JsonObject payload = packet.getAsJsonObject("payload");
+        payload.addProperty("message", event.getName() + "が接続を試行しています");
+        payload.addProperty("player", event.getName());
+        payload.addProperty("uuid", event.getUniqueId().toString());
+        payload.addProperty("ip_address", event.getAddress().getHostAddress());
+        payload.addProperty("result", event.getLoginResult().name());
 
         dispatch("player_pre_login", packet);
     }
