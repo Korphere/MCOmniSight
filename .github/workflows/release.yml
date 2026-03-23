@@ -60,8 +60,8 @@ jobs:
           body: |
             ## MCOmniSight ${{ github.ref_name }}
             
-            最新リリースのMCOmniSight${{ project.version }}です。
-            This is the latest release of MCOmniSight ${{ project.version }}.
+            MCOmniSightの最新リリースです。
+            This is the latest release of MCOmniSight.
             
             ### 📦 配布物の選び方 / How to Choose Handouts
             - **MCOmniSight-x.x.x-full.jar**: 推奨版。CPU/GPU/ディスク等の詳細な統計が利用可能です。 / Recommended version. Detailed statistics on the CPU, GPU, disk, and other components are available.
