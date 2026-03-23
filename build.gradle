@@ -13,6 +13,7 @@ plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
     id("xyz.jpenilla.run-paper") version "2.3.1"
+    id "com.modrinth.minotaur" version "2.8.7"
 }
 
 group = 'com.korphere.mcomnisight'
@@ -86,4 +87,26 @@ processResources {
     filesMatching('plugin.yml') {
         expand props
     }
+}
+
+import com.modrinth.minotaur.dependencies.ModDependency
+
+modrinth {
+    token = System.getenv("MODRINTH_TOKEN")
+    projectId = "oIoPe1pY"
+
+    versionNumber = project.version
+    versionName = "MCOmniSight ${project.version}"
+
+    uploadFile = layout.buildDirectory.file("libs/MCOmniSight-${project.version}-full.jar")
+
+    additionalFiles = [
+            layout.buildDirectory.file("libs/MCOmniSight-${project.version}-lite.jar")
+    ]
+
+    gameVersions = ["1.21"]
+    loaders = ["paper", "purpur"]
+    changelog = System.getenv("COMMIT_MESSAGE")
+
+    versionType = "release"
 }
