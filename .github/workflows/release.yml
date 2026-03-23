@@ -31,6 +31,17 @@ jobs:
       - name: Build Full edition
         run: ./gradlew shadowJar -Poshi
 
+      - name: Debug Token Check
+        run: |
+          if [ -z "${{ secrets.MODRINTH_TOKEN }}" ]; then
+            echo "TOKEN IS EMPTY! Check your GitHub Secrets."
+            exit 1
+          else
+            echo "Token is set (length: ${#token})"
+          fi
+        env:
+          token: ${{ secrets.MODRINTH_TOKEN }}
+
       # --- Modrinth への投稿 ---
       - name: Upload to Modrinth
         run: ./gradlew modrinth
