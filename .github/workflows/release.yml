@@ -64,8 +64,8 @@ jobs:
             This is the latest release of MCOmniSight ${{ project.version }}.
             
             ### 📦 配布物の選び方 / How to Choose Handouts
-            - **MCOmniSight-${ project.version }-full.jar**: 推奨版。CPU/GPU/ディスク等の詳細な統計が利用可能です。 / Recommended version. Detailed statistics on the CPU, GPU, disk, and other components are available.
-            - **MCOmniSight-${ project.version }-lite.jar**: 軽量版。OSの詳細統計は不要で、チャットや参加ログのみ利用したい場合に使用します。 / Lightweight version. Use this if you don’t need detailed OS statistics and only want to use chat and participation logs.
+            - **MCOmniSight-x.x.x-full.jar**: 推奨版。CPU/GPU/ディスク等の詳細な統計が利用可能です。 / Recommended version. Detailed statistics on the CPU, GPU, disk, and other components are available.
+            - **MCOmniSight-x.x.x-lite.jar**: 軽量版。OSの詳細統計は不要で、チャットや参加ログのみ利用したい場合に使用します。 / Lightweight version. Use this if you don’t need detailed OS statistics and only want to use chat and participation logs.
 
           draft: false
           prerelease: false
