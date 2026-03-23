@@ -34,7 +34,7 @@ jobs:
       # --- Modrinth への投稿 ---
       - name: Upload to Modrinth
         run: |
-          npx modrinth-minotaur \
+          npx @modrinth/minotaur \
             --token ${{ secrets.MODRINTH_TOKEN }} \
             --name "MCOmniSight ${{ github.ref_name }}" \
             --project oIoPe1pY \
