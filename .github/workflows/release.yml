@@ -34,7 +34,12 @@ jobs:
       # --- Modrinth への投稿 ---
       - name: Upload to Modrinth
         run: |
-          npx @modrinth/minotaur \
+          # 1. Minotaur の最新バイナリをダウンロード
+          curl -sL https://github.com/modrinth/minotaur/releases/latest/download/minotaur-linux -o minotaur
+          chmod +x minotaur
+          
+          # 2. 実行 (引数はこれまでのままでOK)
+          ./minotaur \
             --token ${{ secrets.MODRINTH_TOKEN }} \
             --name "MCOmniSight ${{ github.ref_name }}" \
             --project oIoPe1pY \
