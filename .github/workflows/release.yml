@@ -31,6 +31,33 @@ jobs:
       - name: Build Full edition
         run: ./gradlew shadowJar -Poshi
 
+      # --- Modrinth への投稿 ---
+      - name: Upload to Modrinth
+        uses: mguenther/minotaur@v2
+        with:
+          token: ${{ secrets.MODRINTH_TOKEN }}
+          name: "MCOmniSight ${{ github.ref_name }}"
+          project_id: "oIoPe1pY"
+          version_number: "${{ github.ref_name }}"
+          file: |
+            build/libs/MCOmniSight-*-full.jar
+            build/libs/MCOmniSight-*-lite.jar
+          game_versions: "1.21"
+          loaders: "paper, purpur"
+          changelog: ${{ github.event.head_commit.message }}
+
+      # --- CurseForge への投稿 ---
+      #- name: Upload to CurseForge
+      #  uses: itsmeow/curseforge-upload@v3
+      #  with:
+      #    token: ${{ secrets.CURSEFORGE_TOKEN }}
+      #    project_id: "YOUR_PROJECT_ID" # CurseForgeのプロジェクトID
+      #    game_endpoint: "minecraft"
+      #    file: "build/libs/MCOmniSight-${{ steps.get_version.outputs.VERSION }}.jar"
+      #    release_type: "release"
+      #    changelog: ${{ github.event.head_commit.message }}
+      #    display_name: "MCOmniSight ${{ steps.get_version.outputs.VERSION }}"
+
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v2

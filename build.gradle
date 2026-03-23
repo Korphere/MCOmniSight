@@ -16,7 +16,7 @@ plugins {
 }
 
 group = 'com.korphere.mcomnisight'
-version = '1.0.0'
+version = System.getenv("GITHUB_REF_NAME")?.replaceAll('^v', '') ?: '1.0.0'
 
 repositories {
     mavenCentral()
@@ -44,7 +44,7 @@ shadowJar {
     if (includeOshi) {
         relocate 'oshi', 'com.korphere.mcomnisight.libs.oshi'
         relocate 'com.sun.jna', 'com.korphere.mcomnisight.libs.jna'
-        archiveClassifier.set('')
+        archiveClassifier.set('full')
     } else {
         archiveClassifier.set('lite')
     }

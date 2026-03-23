@@ -1,4 +1,4 @@
-# MCOmniSight v1.0.0
+# MCOmniSight
 
 MCOmniSightは、Minecraftサーバー（Paper）のリアルタイムステータスをWebSocket経由で配信する高機能プラグインです。
 サーバーの負荷だけでなく、OSレイヤーの詳細な情報を収集・配信します。

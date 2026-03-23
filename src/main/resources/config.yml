@@ -1,0 +1,380 @@
+# WebSocket サーバーのポート番号
+# WebSocket server port number
+websocket-port: 8887
+
+# データの圧縮 (Gzip) を有効にするか
+# 通信量を抑えたい場合は true 推奨
+# Enable data compression (Gzip)
+# Recommended to set to true if you want to reduce data usage
+gzip-enabled: false
+
+# 更新・送信間隔 (20 ticks = 1秒)
+# Update and transmission interval (20 ticks = 1 second)
+update-interval-ticks: 20
+
+# エンドポイント
+# Endpoint
+endpoint: "https://example.com/status-api"
+
+# 接続モードの設定
+# DIRECT: 直接ポート開放する場合 (ws://)
+# PROXY: Nginx等のリバースプロキシを通す場合 (wss://)
+# TUNNEL: Cloudflare Tunnel等を使用する場合
+# Connection Mode Settings
+# DIRECT: When opening ports directly (ws://)
+# PROXY: When routing through a reverse proxy such as Nginx (wss://)
+# TUNNEL: When using Cloudflare Tunnel or similar services
+connection-mode: DIRECT
+
+# 認証用パスワード
+# Authentication Password
+api-key: "your-secret-key-here"
+
+# プロキシ/トンネル使用時に、接続元の本当のIPを取得するかどうか
+# Whether to retrieve the actual IP address of the connecting device when using a proxy or tunnel
+trust-proxy-headers: true
+
+# 接続制限（ホワイトリスト）
+# Connection Restrictions (Whitelist)
+whitelist:
+  enabled: false
+  # 接続を許可するIPアドレスのリスト
+  # ローカルホストやWebサーバーのIPを指定
+  # List of IP addresses allowed to connect
+  # Specify the localhost or web server IP address
+  allowed-ips:
+    - "127.0.0.1"
+    - "192.168.1.10"
+
+features:
+  standard:
+    enabled: true
+    online_players: true
+    max_players: true
+    average_tick_time: false
+    allow_end: false
+    allow_flight: false
+    allow_nether: false
+    bukkit_version: false
+    connection_throttle: false
+    current_tick: false
+    gen_structures: false
+    hide_online_players: false
+    idle_timeout: false
+    ip: false
+    max_chained_neighbor_updates: false
+    max_world_size: false
+    mc_version: false
+    name: false
+    online_mode: false
+    port: false
+    resource_pack: false
+    resource_pack_hash: false
+    resource_pack_prompt: false
+    simulation_distance: false
+    spawn_radius: false
+    update_folder: false
+    version: false
+    version_message: false
+    view_distance: false
+    has_whitelist: false
+    is_accepting_transfers: false
+    is_enforcing_secure_profiles: false
+    is_hardcore: false
+    is_logging_ips: false
+    is_primary_thread: false
+    is_resource_pack_required: false
+    is_stopping: false
+    is_ticking_worlds: false
+    is_whitelist_enforced: false
+    banned_players: false
+    motd_plain: false
+    motd_json: false
+    motd_legacy: false
+  performance:
+    enabled: false
+    tps: false
+    mspt: false
+    memory:
+      enabled: false
+      used: false
+      total: false
+      free: false
+      max: false
+    cpu:
+      enabled: false
+      usable_cores: false
+  players:
+    enabled: false
+    players_list:
+      enabled: false
+      player_data:
+        name: false
+        display_name: false
+        player_list_name: false
+        uuid: false
+        world: false
+        hp: false
+        hp_scale: false
+        hunger: false
+        game_mode: false
+        prev_game_mode: false
+        level: false
+        exp: false
+        exp_cooldown: false
+        total_exp: false
+        locale: false
+        ping: false
+        host: false
+        host_string: false
+        address: false
+        port: false
+        footer: false
+        header: false
+        time: false
+        time_offset: false
+        weather: false
+        client_view_distance: false
+        compass_target: false
+        fly_speed: false
+        walk_speed: false
+        respawn: false
+        max_hp: false
+        armor: false
+        armor_toughness: false
+        attack_damage: false
+        attack_knockback: false
+        attack_speed: false
+        burning_time: false
+        explosion_knockback_resistance: false
+        fall_damage_multiplier: false
+        flying_speed: false
+        follow_range: false
+        gravity: false
+        jump_strength: false
+        knockback_resistance: false
+        luck: false
+        max_absorption: false
+        movement_efficiency: false
+        movement_speed: false
+        oxygen_bonus: false
+        safe_fall_distance: false
+        scale: false
+        step_height: false
+        water_movement_efficiency: false
+        player_block_break_speed: false
+        player_block_interaction_range: false
+        player_entity_interaction_range: false
+        player_mining_efficiency: false
+        player_sneaking_speed: false
+        player_submerged_mining_speed: false
+        player_sweeping_damage_ratio: false
+
+        inventory:
+          enabled: false
+          main: false
+          armor: false
+          offhand: false
+        location:
+          enabled: false
+          x: false
+          y: false
+          z: false
+          accurate_x: false
+          accurate_y: false
+          accurate_z: false
+          yaw: false
+          pitch: false
+          accurate_yaw: false
+          accurate_pitch: false
+          block: false
+          block_x: false
+          block_y: false
+          block_z: false
+        permissions:
+          enabled: false
+          allow_flight: false
+        states:
+          enabled: false
+          inside_vehicle: false
+          gliding: false
+          glowing: false
+          swimming: false
+          sleeping: false
+          flying: false
+          sneaking: false
+          sprinting: false
+          blocking: false
+          climbing: false
+          conversing: false
+          deeply_sleeping: false
+          frozen: false
+          sleeping_ignored: false
+          banned: false
+          dead: false
+          hand_raised: false
+          in_lava: false
+        statistics:
+          enabled: false
+          player_kills: false
+          animals_bred: false
+          armor_cleaned: false
+          aviate_one_cm: false
+          banner_cleaned: false
+          beacon_interaction: false
+          bell_ring: false
+          boat_one_cm: false
+          break_item: false
+          brewing_stand_interaction: false
+          cake_slices_eaten: false
+          cauldron_filled: false
+          cauldron_used: false
+          chest_opened: false
+          clean_shulker_box: false
+          climb_one_cm: false
+          craft_item: false
+          crafting_table_interaction: false
+          crouch_one_cm: false
+          damage_absorbed: false
+          damage_blocked_by_shield: false
+          damage_dealt: false
+          damage_dealt_absorbed: false
+          damage_dealt_resisted: false
+          damage_resisted: false
+          damage_taken: false
+          deaths: false
+          dispenser_inspected: false
+          drop: false
+          drop_count: false
+          dropper_inspected: false
+          ender_chest_opened: false
+          entity_killed_by: false
+          fall_one_cm: false
+          fish_caught: false
+          flower_potted: false
+          fly_one_cm: false
+          furnace_interaction: false
+          hopper_inspected: false
+          horse_one_cm: false
+          interact_with_anvil: false
+          interact_with_blast_furnace: false
+          interact_with_campfire: false
+          interact_with_cartography_table: false
+          interact_with_grindstone: false
+          interact_with_lectern: false
+          interact_with_loom: false
+          interact_with_smithing_table: false
+          interact_with_smoker: false
+          interact_with_stonecutter: false
+          item_enchanted: false
+          jump: false
+          kill_entity: false
+          leave_game: false
+          mine_block: false
+          minecart_one_cm: false
+          mob_kills: false
+          note_block_played: false
+          note_block_tuned: false
+          open_barrel: false
+          pickup: false
+          pig_one_cm: false
+          play_one_minute: false
+          raid_trigger: false
+          raid_win: false
+          record_played: false
+          shulker_box_opened: false
+          sleep_in_bed: false
+          sneak_time: false
+          sprint_one_cm: false
+          strider_one_cm: false
+          swim_one_cm: false
+          talked_to_villager: false
+          target_hit: false
+          time_since_death: false
+          time_since_rest: false
+          total_world_time: false
+          traded_with_villager: false
+          trapped_chest_triggered: false
+          use_item: false
+          walk_on_water_one_cm: false
+          walk_one_cm: false
+
+  host_status:
+    enabled: false
+    cpu_context_switches: false
+    cpu_load: false
+    cpu_interrupts: false
+    cpu_logical_processor_count: false
+    cpu_max_freq: false
+    cpu_physical_package_count: false
+    cpu_current_freq: false
+    cpu_feature_flags: false
+    cpu_logical_processors: false
+    cpu_physical_processor_count: false
+    cpu_physical_processors: false
+    cpu_processor_caches: false
+    cpu_processor_cpu_load_ticks: false
+    mem_available: false
+    mem_page_size: false
+    physical_memory: false
+    mem_total: false
+    virtual_memory: false
+    cs_baseboard: false
+    cs_firmware: false
+    cs_hardware_uuid: false
+    cs_manufacturer: false
+    cs_model: false
+    cs_serial_number: false
+    identifier: false
+    identifier_model: false
+    identifier_family: false
+    identifier_name: false
+    identifier_arch: false
+    identifier_id: false
+    identifier_stepping: false
+    identifier_vendor: false
+    identifier_vendor_freq: false
+    identifier_is_cpu_64bit: false
+    gpus: false
+    net_interfaces: false
+    disks: false
+
+
+  world_data:
+    enabled: false
+    per_world_settings:
+      environment: false
+      seed: false
+      difficulty: false
+      difficulty_translation_key: false
+      is_hardcore: false
+      allow_animals: false
+      allow_monsters: false
+      time:
+        game_time: false
+        ticks: false
+        full_time: false
+        day_count: false
+      weather:
+        has_storm: false
+        has_thunder: false
+        clear_weather_duration: false
+      chunks:
+        loaded_count: false
+        chunk_count: false
+      entities:
+        total: false
+        living_count: false
+        tile_entity_count: false
+      world_border:
+        size: false
+        center_x: false
+        center_z: false
+
+  events:
+    types:
+      player_join: false
+      player_quit: false
+      player_animation: false
+      player_chat: false
+      player_pre_login: false
