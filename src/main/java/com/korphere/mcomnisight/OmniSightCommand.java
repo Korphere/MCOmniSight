@@ -47,7 +47,6 @@ public class OmniSightCommand implements CommandExecutor, TabCompleter {
                 sender.sendMessage(Component.text("➤ Active Clients: " + clients, NamedTextColor.GREEN));
                 sender.sendMessage(Component.text("➤ Enabled Features:", NamedTextColor.YELLOW));
 
-                // featuresセクションを再帰的にスキャンして表示
                 org.bukkit.configuration.ConfigurationSection features = plugin.getConfig().getConfigurationSection("features");
                 if (features != null) {
                     displayEnabledFeatures(sender, features, 1);

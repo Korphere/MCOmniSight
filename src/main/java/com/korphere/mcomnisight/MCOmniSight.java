@@ -17,12 +17,10 @@ public final class MCOmniSight extends JavaPlugin {
 
         StatusData.init(this);
 
-        // サーバー起動
         startWebSocketServer();
 
         getServer().getPluginManager().registerEvents(new OmniSightEventListener(this), this);
 
-        // メトリクス更新タスク (OSHI)
         if (oshiAvailable) {
             new BukkitRunnable() {
                 @Override
@@ -32,7 +30,6 @@ public final class MCOmniSight extends JavaPlugin {
             }.runTaskTimerAsynchronously(this, 0L, 20L);
         }
 
-        // データ配信タスクの開始
         startUpdateTask();
 
         OmniSightCommand cmd = new OmniSightCommand();
@@ -65,16 +62,11 @@ public final class MCOmniSight extends JavaPlugin {
     }
 
     public void reloadPlugin() {
-        // 1. 物理ファイルからメモリへ最新設定を読み込む
         reloadConfig();
-        // 2. 念のため、新しく追加されたデフォルト値があれば補完する
         setupConfig();
 
-        // 3. 各プロバイダー（StatusData等）の静的キャッシュを更新
-        // これをやらないと、内部で保持している「有効フラグ」が古いままになります
         StatusData.init(this);
 
-        // 4. WebSocketサーバーの再起動判定
         int newPort = getConfig().getInt("websocket-port", 8887);
         if (wsServer == null || wsServer.getPort() != newPort) {
             getLogger().info("Port change detected. Restarting WebSocket server...");
@@ -85,13 +77,9 @@ public final class MCOmniSight extends JavaPlugin {
                 getLogger().severe("サーバーの再起動に失敗しました。");
             }
         } else {
-            // ポートが変わっていない場合でも、新しい認証キーやホワイトリストを反映させる
-            // ※ wsServer 側に updateSettings メソッドを作っておくとスマートです
             wsServer.updateSettings();
         }
 
-        // 5. データ配信タスク（スケジュール）の再起動
-        // これにより、update-interval-ticks の変更が即座に反映されます
         startUpdateTask();
 
         getLogger().info("Configuration and tasks have been re-synchronized.");

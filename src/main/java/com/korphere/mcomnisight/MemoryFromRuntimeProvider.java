@@ -22,25 +22,13 @@ public class MemoryFromRuntimeProvider {
 
         Map<String, Supplier<Object>> entryMap = new LinkedHashMap<>();
 
-        entryMap.put("used", () -> createMemoryArray(runtime.totalMemory() - runtime.freeMemory()));
-        entryMap.put("total", () -> createMemoryArray(runtime.totalMemory()));
-        entryMap.put("free", () -> createMemoryArray(runtime.freeMemory()));
-        entryMap.put("max", () -> createMemoryArray(runtime.maxMemory()));
+        entryMap.put("used", () -> Utils.createByteSizeArray(runtime.totalMemory() - runtime.freeMemory()));
+        entryMap.put("total", () -> Utils.createByteSizeArray(runtime.totalMemory()));
+        entryMap.put("free", () -> Utils.createByteSizeArray(runtime.freeMemory()));
+        entryMap.put("max", () -> Utils.createByteSizeArray(runtime.maxMemory()));
 
         Utils.serializeFromMap(entryMap, path);
 
         return memory;
-    }
-
-    private static @NotNull JsonArray createMemoryArray(long bytes) {
-        JsonArray array = new JsonArray();
-        array.add(bytes);                               // B
-        array.add(bytes / 1024);                        // KiB (Binary)
-        array.add(bytes / 1000);                        // KB (Decimal)
-        array.add(bytes / 1024 / 1024);                 // MiB
-        array.add(bytes / 1000 / 1000);                 // MB
-        array.add(bytes / 1024 / 1024 / 1024);          // GiB
-        array.add(bytes / 1000 / 1000 / 1000);          // GB
-        return array;
     }
 }

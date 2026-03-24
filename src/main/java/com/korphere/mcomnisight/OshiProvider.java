@@ -274,24 +274,12 @@ public class OshiProvider {
             gpuData.put("name", card.getName());
             gpuData.put("vendor", card.getVendor());
             gpuData.put("id", card.getDeviceId());
-            gpuData.put("vram", createGpuVramArray(card.getVRam()));
+            gpuData.put("vram", Utils.createByteSizeArray(card.getVRam()));
             gpuData.put("version", card.getVersionInfo());
 
             gpuList.add(gpuData);
         }
 
         return gpuList;
-    }
-
-    private static @NotNull JsonArray createGpuVramArray(long bytes) {
-        JsonArray array = new JsonArray();
-        array.add(bytes);                               // B
-        array.add(bytes / 1024);                        // KiB (Binary)
-        array.add(bytes / 1000);                        // KB (Decimal)
-        array.add(bytes / 1024 / 1024);                 // MiB
-        array.add(bytes / 1000 / 1000);                 // MB
-        array.add(bytes / 1024 / 1024 / 1024);          // GiB
-        array.add(bytes / 1000 / 1000 / 1000);          // GB
-        return array;
     }
 }

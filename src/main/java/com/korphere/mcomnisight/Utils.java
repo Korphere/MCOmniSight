@@ -70,4 +70,16 @@ public class Utils {
             default -> current.addProperty(lastKey, value.toString());
         }
     }
+
+    public static @NotNull JsonArray createByteSizeArray(long bytes) {
+        JsonArray array = new JsonArray();
+        array.add(bytes);                               // B
+        array.add(bytes / 1024);                        // KiB (Binary)
+        array.add(bytes / 1000);                        // KB (Decimal)
+        array.add(bytes / 1024 / 1024);                 // MiB
+        array.add(bytes / 1000 / 1000);                 // MB
+        array.add(bytes / 1024 / 1024 / 1024);          // GiB
+        array.add(bytes / 1000 / 1000 / 1000);          // GB
+        return array;
+    }
 }
