@@ -38,6 +38,8 @@ public class PlayerStatesProvider {
         entryMap.put("dead", player::isDead);
         entryMap.put("hand_raised", player::isHandRaised);
         entryMap.put("in_lava", player::isInLava);
+        entryMap.put("in_water", player::isInWater);
+        entryMap.put("collidable", player::isCollidable);
 
         return Utils.serializeFromMap(entryMap, path);
     }

@@ -214,6 +214,8 @@ features:
           dead: false
           hand_raised: false
           in_lava: false
+          in_water: false
+          collidable: false
         statistics:
           enabled: false
           player_kills: false
@@ -335,9 +337,66 @@ features:
     identifier_vendor: false
     identifier_vendor_freq: false
     identifier_is_cpu_64bit: false
+    cpu_temperature: false
+    cpu_voltage: false
+    fan_speeds: false
     gpus: false
     net_interfaces: false
     disks: false
+    os_bitness: false
+    os_family: false
+    os_manufacturer: false
+    cp_affinity_mask: false
+    cp_bitness: false
+    cp_context_switches: false
+    cp_name: false
+    cp_args: false
+    cp_bytes_read: false
+    cp_bytes_written: false
+    cp_cmd_line: false
+    cp_current_working_dir: false
+    cp_env_vars: false
+    cp_group: false
+    cp_group_id: false
+    cp_hard_open_file_limit: false
+    cp_kernel_time: false
+    cp_major_faults: false
+    cp_minor_faults: false
+    cp_open_files: false
+    cp_parent_process_id: false
+    cp_path: false
+    cp_priority: false
+    cp_process_cpu_load_cumulative: false
+    cp_process_id: false
+    cp_resident_set_size: false
+    cp_soft_open_file_limit: false
+    cp_start_time: false
+    cp_state: false
+    cp_thread_count: false
+    cp_thread_details: false
+    cp_up_time: false
+    cp_user: false
+    cp_user_id: false
+    cp_user_time: false
+    cp_virtual_size: false
+    ct_user_time: false
+    ct_up_time: false
+    ct_start_time: false
+    ct_thread_id: false
+    ct_name: false
+    ct_thread_cpu_load_cumulative: false
+    ct_start_mem_addr: false
+    ct_priority: false
+    ct_minor_faults: false
+    ct_owning_process_id: false
+    ct_major_faults: false
+    ct_kernel_time: false
+    ct_context_switches: false
+    ct_state: false
+    fs_file_stores: false
+    fs_max_file_descriptors: false
+    fs_open_file_descriptors: false
+    fs_max_file_descriptors_per_process: false
 
 
   world_data:
@@ -378,3 +437,4 @@ features:
       player_animation: false
       player_chat: false
       player_pre_login: false
+      player_advancement_done: false

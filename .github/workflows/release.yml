@@ -51,15 +51,10 @@ jobs:
 
       # --- CurseForge への投稿 ---
       #- name: Upload to CurseForge
-      #  uses: itsmeow/curseforge-upload@v3
-      #  with:
-      #    token: ${{ secrets.CURSEFORGE_TOKEN }}
-      #    project_id: "YOUR_PROJECT_ID" # CurseForgeのプロジェクトID
-      #    game_endpoint: "minecraft"
-      #    file: "build/libs/MCOmniSight-${{ steps.get_version.outputs.VERSION }}.jar"
-      #    release_type: "release"
-      #    changelog: ${{ github.event.head_commit.message }}
-      #    display_name: "MCOmniSight ${{ steps.get_version.outputs.VERSION }}"
+      #  run: ./gradlew curseforge
+      #  env:
+      #    CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+      #    COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
 
       - name: Create Release
         id: create_release

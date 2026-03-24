@@ -14,6 +14,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class OmniSightEventListener implements Listener {
@@ -101,5 +102,18 @@ public class OmniSightEventListener implements Listener {
         payload.addProperty("result", event.getLoginResult().name());
 
         dispatch("player_pre_login", packet);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onAdvancementDone(@NotNull PlayerAdvancementDoneEvent event) {
+        if (!plugin.getConfig().getBoolean(path + "player_advancement_done", false)) return;
+        JsonObject packet = EventProvider.createEventPacket("PLAYER_ADVANCEMENT_DONE");
+        JsonObject payload = packet.getAsJsonObject("payload");
+        payload.addProperty("message", event.getPlayer().getName() + "が" + plainSerializer.serialize(event.getAdvancement().displayName()) + "を達成しました");
+        payload.addProperty("player", event.getPlayer().getName());
+        payload.addProperty("uuid", event.getPlayer().getUniqueId().toString());
+        payload.addProperty("advancement", plainSerializer.serialize(event.getAdvancement().displayName()));
+
+        dispatch("player_advancement_done", packet);
     }
 }

@@ -3,7 +3,6 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        // Shadow Plugin が内部で使用する ASM を Java 21 対応版に強制
         classpath 'org.ow2.asm:asm:9.6'
         classpath 'org.ow2.asm:asm-commons:9.6'
     }
@@ -14,6 +13,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '8.1.1'
     id("xyz.jpenilla.run-paper") version "2.3.1"
     id "com.modrinth.minotaur" version "2.8.7"
+    //id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 
 group = 'com.korphere.mcomnisight'
@@ -115,3 +115,22 @@ modrinth {
     changelog = System.getenv("COMMIT_MESSAGE")
     versionType = "release"
 }
+
+/*curseforge {
+    apiKey = System.getenv("CURSEFORGE_TOKEN") ?: ""
+    project {
+        id = '1494154'
+        releaseType = 'release'
+        addGameVersion '1.21'
+        addGameVersion 'Paper'
+        addGameVersion 'Purpur'
+
+        mainArtifact(layout.buildDirectory.file("libs/MCOmniSight-${project.version}-full.jar")) {
+            displayName = "MCOmniSight ${project.version} (Full)"
+        }
+
+        addArtifact(layout.buildDirectory.file("libs/MCOmniSight-${project.version}-lite.jar")) {
+            displayName = "MCOmniSight ${project.version} (Lite)"
+        }
+    }
+}*/
