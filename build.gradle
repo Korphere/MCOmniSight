@@ -89,24 +89,29 @@ processResources {
     }
 }
 
-import com.modrinth.minotaur.dependencies.ModDependency
-
 modrinth {
     token = System.getenv("MODRINTH_TOKEN")
     projectId = "oIoPe1pY"
-
     versionNumber = project.version
     versionName = "MCOmniSight ${project.version}"
 
-    uploadFile = layout.buildDirectory.file("libs/MCOmniSight-${project.version}-full.jar")
+    uploadFile = tasks.shadowJar
 
-    additionalFiles = [
-            layout.buildDirectory.file("libs/MCOmniSight-${project.version}-lite.jar")
-    ]
+    def liteFile = layout.buildDirectory.file("libs/MCOmniSight-${project.version}-lite.jar").get().asFile
+    def fullFile = layout.buildDirectory.file("libs/MCOmniSight-${project.version}-full.jar").get().asFile
+
+    if (project.hasProperty('oshi')) {
+        if (liteFile.exists()) {
+            additionalFiles = [liteFile]
+        }
+    } else {
+        if (fullFile.exists()) {
+            additionalFiles = [fullFile]
+        }
+    }
 
     gameVersions = ["1.21"]
     loaders = ["paper", "purpur"]
     changelog = System.getenv("COMMIT_MESSAGE")
-
     versionType = "release"
 }
