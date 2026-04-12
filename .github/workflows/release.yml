@@ -42,9 +42,16 @@ jobs:
         env:
           token: ${{ secrets.MODRINTH_TOKEN }}
 
-      # --- Modrinth への投稿 ---
-      - name: Upload to Modrinth
+      # --- Modrinth への投稿 (Lite版) ---
+      - name: Upload Lite to Modrinth
         run: ./gradlew modrinth
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+
+      # --- Modrinth への投稿 (Full版) ---
+      - name: Upload Full to Modrinth
+        run: ./gradlew modrinth -Poshi
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
@@ -60,7 +67,6 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v2
         with:
-          # build/libs 内にある全ての JAR をリリースに添付
           files: build/libs/*.jar
           name: Release ${{ github.ref_name }}
           body: |

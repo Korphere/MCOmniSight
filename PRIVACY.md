@@ -1,12 +1,12 @@
 # Privacy Policy for MCOmniSight
 
-MCOmniSightは、サーバー管理者が自身のサーバー状態を監視するために設計されています。
+MCOmniSight is designed to allow server administrators to monitor the status of their servers.
 
-### 収集および配信されるデータ
-- **システム情報**: CPU/GPUの型番、使用率、ディスクI/O、ネットワーク帯域 など。
-- **プレイヤー情報**: ユーザー名、UUID、チャット内容、接続元IPアドレス など。
+### Data Collected and Transmitted
+- **System Information**: CPU/GPU model numbers, utilization rates, disk I/O, network bandwidth, etc.
+- **Player Information**: Username, UUID, chat content, source IP address, etc.
 
-### データの取り扱い
-- 本プラグインが収集したデータは、設定されたWebSocketポートを通じてのみ配信されます。
-- 開発者（Korphere）がこれらのデータを収集することはありません。
-- データのセキュリティ（APIキーの管理、SSL/TLSの使用）は利用者の責任で行ってください。
+### Data Handling
+- Data collected by this plugin is transmitted exclusively through the configured WebSocket port.
+- The developer (Korphere) does not collect this data.
+- Users are responsible for ensuring data security (managing API keys, using SSL/TLS).

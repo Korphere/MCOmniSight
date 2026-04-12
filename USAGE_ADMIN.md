@@ -3,7 +3,7 @@
 MCOmniSight を導入し、正しく動作させるための手順を解説します。
 
 ## 1. インストール
-1. `MCOmniSight-1.0.0.jar` をサーバーの `plugins` フォルダに配置します。
+1. `MCOmniSight-x.x.x.jar` をサーバーの `plugins` フォルダに配置します。
 2. サーバーを起動します。
 3. `plugins/MCOmniSight/config.yml` が生成されたことを確認してください。
 

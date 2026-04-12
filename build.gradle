@@ -92,23 +92,14 @@ processResources {
 modrinth {
     token = System.getenv("MODRINTH_TOKEN")
     projectId = "oIoPe1pY"
-    versionNumber = project.version
-    versionName = "MCOmniSight ${project.version}"
+
+    def suffix = project.hasProperty('oshi') ? "full" : "lite"
+    versionNumber = "${project.version}-${suffix}"
+    versionName = "MCOmniSight ${project.version} (${suffix.capitalize()})"
 
     uploadFile = tasks.shadowJar
 
-    def liteFile = layout.buildDirectory.file("libs/MCOmniSight-${project.version}-lite.jar").get().asFile
-    def fullFile = layout.buildDirectory.file("libs/MCOmniSight-${project.version}-full.jar").get().asFile
-
-    if (project.hasProperty('oshi')) {
-        if (liteFile.exists()) {
-            additionalFiles = [liteFile]
-        }
-    } else {
-        if (fullFile.exists()) {
-            additionalFiles = [fullFile]
-        }
-    }
+    additionalFiles = []
 
     gameVersions = ["1.21"]
     loaders = ["paper", "purpur"]
