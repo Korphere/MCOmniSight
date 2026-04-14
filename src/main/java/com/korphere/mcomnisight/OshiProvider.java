@@ -28,6 +28,14 @@ public class OshiProvider {
     private static final InternetProtocolStats ips = os.getInternetProtocolStats();
     private static final NetworkParams np = os.getNetworkParams();
     private static final OperatingSystem.OSVersionInfo vi = os.getVersionInfo();
+    private static final int bn = os.getBitness();
+    private static final int procCnt = os.getProcessCount();
+    private static final int pid = os.getProcessId();
+    private static final long sysUt = os.getSystemUptime();
+    private static final long sysBt = os.getSystemBootTime();
+    private static final boolean isElevated = os.isElevated();
+    private static final int threadCount = os.getThreadCount();
+    private static final int threadId = os.getThreadId();
 
     private static volatile double lastCpuLoad = 0.0;
     private static long[] lastTicks;
@@ -258,7 +266,215 @@ public class OshiProvider {
         entryMap.put("fs_max_file_descriptors", fs::getMaxFileDescriptors);
         entryMap.put("fs_open_file_descriptors", fs::getOpenFileDescriptors);
         entryMap.put("fs_max_file_descriptors_per_process", fs::getMaxFileDescriptorsPerProcess);
+        entryMap.put("fss", () -> {
+            JsonArray fileStores = new JsonArray();
+            for (OSFileStore osfs : fs.getFileStores()) {
+                JsonObject osFileStoreObj = new JsonObject();
+                osFileStoreObj.addProperty("volume", osfs.getVolume());
+                osFileStoreObj.addProperty("uuid", osfs.getUUID());
+                osFileStoreObj.addProperty("usable", osfs.getUsableSpace());
+                osFileStoreObj.addProperty("total", osfs.getTotalSpace());
+                osFileStoreObj.addProperty("total_inodes", osfs.getTotalInodes());
+                osFileStoreObj.addProperty("options", osfs.getOptions());
+                osFileStoreObj.addProperty("mount", osfs.getMount());
+                osFileStoreObj.addProperty("logical_volume", osfs.getLogicalVolume());
+                osFileStoreObj.addProperty("label", osfs.getLabel());
+                osFileStoreObj.addProperty("free", osfs.getFreeSpace());
+                osFileStoreObj.addProperty("free_inodes", osfs.getFreeInodes());
+                osFileStoreObj.addProperty("type", osfs.getType());
+                osFileStoreObj.addProperty("description", osfs.getDescription());
+                osFileStoreObj.addProperty("name", osfs.getName());
+                fileStores.add(osFileStoreObj);
+            }
+            return fileStores;
+        });
+        entryMap.put("connections", () -> {
+            JsonArray fileStores = new JsonArray();
+            for (InternetProtocolStats.IPConnection connection : ips.getConnections()) {
+                JsonObject connectionObj = new JsonObject();
+                connectionObj.addProperty("foreign_port", connection.getForeignPort());
+                connectionObj.addProperty("local_port", connection.getLocalPort());
+                connectionObj.addProperty("type", connection.getType());
+                connectionObj.addProperty("owning_process_id", connection.getowningProcessId());
+                connectionObj.addProperty("receive_queue", connection.getReceiveQueue());
+                connectionObj.addProperty("transmit_queue", connection.getTransmitQueue());
+                connectionObj.addProperty("state", connection.getState().name());
+                JsonArray fas = new JsonArray();
+                for (byte fa : connection.getForeignAddress()) {
+                    fas.add(fa);
+                }
+                connectionObj.add("foreign_address", fas);
+                JsonArray las = new JsonArray();
+                for (byte la : connection.getLocalAddress()) {
+                    fas.add(la);
+                }
+                connectionObj.add("local_address", las);
 
+                fileStores.add(connectionObj);
+            }
+            return fileStores;
+        });
+        entryMap.put("tcp_v4_stats", () -> {
+            JsonObject s = new JsonObject();
+            InternetProtocolStats.TcpStats v4s = ips.getTCPv4Stats();
+            s.addProperty("connection_failures", v4s.getConnectionFailures());
+            s.addProperty("connection_active", v4s.getConnectionsActive());
+            s.addProperty("connection_established", v4s.getConnectionsEstablished());
+            s.addProperty("in_errors", v4s.getInErrors());
+            s.addProperty("connection_passive", v4s.getConnectionsPassive());
+            s.addProperty("connection_reset", v4s.getConnectionsReset());
+            s.addProperty("out_resets", v4s.getOutResets());
+            s.addProperty("segments_received", v4s.getSegmentsReceived());
+            s.addProperty("segments_established", v4s.getConnectionsEstablished());
+            s.addProperty("segments_retransmitted", v4s.getSegmentsRetransmitted());
+            s.addProperty("segments_sent", v4s.getSegmentsSent());
+            return s;
+        });
+        entryMap.put("tcp_v6_stats", () -> {
+            JsonObject s = new JsonObject();
+            InternetProtocolStats.TcpStats v6s = ips.getTCPv6Stats();
+            s.addProperty("connection_failures", v6s.getConnectionFailures());
+            s.addProperty("connection_active", v6s.getConnectionsActive());
+            s.addProperty("connection_established", v6s.getConnectionsEstablished());
+            s.addProperty("in_errors", v6s.getInErrors());
+            s.addProperty("connection_passive", v6s.getConnectionsPassive());
+            s.addProperty("connection_reset", v6s.getConnectionsReset());
+            s.addProperty("out_resets", v6s.getOutResets());
+            s.addProperty("segments_received", v6s.getSegmentsReceived());
+            s.addProperty("segments_established", v6s.getConnectionsEstablished());
+            s.addProperty("segments_retransmitted", v6s.getSegmentsRetransmitted());
+            s.addProperty("segments_sent", v6s.getSegmentsSent());
+            return s;
+        });
+        entryMap.put("udp_v4_stats", () -> {
+            JsonObject s = new JsonObject();
+            InternetProtocolStats.UdpStats v4s = ips.getUDPv4Stats();
+            s.addProperty("datagrams_no_port", v4s.getDatagramsNoPort());
+            s.addProperty("datagrams_received", v4s.getDatagramsReceived());
+            s.addProperty("datagrams_sent", v4s.getDatagramsSent());
+            s.addProperty("datagrams_received_errors", v4s.getDatagramsReceivedErrors());
+            return s;
+        });
+        entryMap.put("udp_v6_stats", () -> {
+            JsonObject s = new JsonObject();
+            InternetProtocolStats.UdpStats v6s = ips.getUDPv6Stats();
+            s.addProperty("datagrams_no_port", v6s.getDatagramsNoPort());
+            s.addProperty("datagrams_received", v6s.getDatagramsReceived());
+            s.addProperty("datagrams_sent", v6s.getDatagramsSent());
+            s.addProperty("datagrams_received_errors", v6s.getDatagramsReceivedErrors());
+            return s;
+        });
+
+        entryMap.put("np_host_name", np::getHostName);
+        entryMap.put("np_domain_name", np::getDomainName);
+        entryMap.put("np_ipv4_default_gateway", np::getIpv4DefaultGateway);
+        entryMap.put("np_ipv6_default_gateway", np::getIpv6DefaultGateway);
+        entryMap.put("dns_servers", () -> {
+            JsonArray dnsServers = new JsonArray();
+            for (String dns: np.getDnsServers()) {
+                dnsServers.add(dns);
+            }
+            return dnsServers;
+        });
+
+        entryMap.put("vi_build_number", vi::getBuildNumber);
+        entryMap.put("vi_code_name", vi::getCodeName);
+        entryMap.put("vi_version", vi::getVersion);
+
+        entryMap.put("bitness", () -> bn);
+        entryMap.put("process_count", () -> procCnt);
+        entryMap.put("process_id", () -> pid);
+        entryMap.put("sys_uptime", () -> sysUt);
+        entryMap.put("sys_boot_time", () -> sysBt);
+        entryMap.put("is_elevated", () -> isElevated);
+        entryMap.put("thread_count", () -> threadCount);
+        entryMap.put("thread_id", () -> threadId);
+
+        entryMap.put("processes", () -> {
+            JsonArray procs = new JsonArray();
+            for (OSProcess proc : os.getProcesses()) {
+                JsonObject procObj = new JsonObject();
+                procObj.addProperty("cpu_load_between_ticks", proc.getProcessCpuLoadBetweenTicks(proc));
+                procObj.addProperty("virtual_size", proc.getVirtualSize());
+                procObj.addProperty("user_time", proc.getUserTime());
+                procObj.addProperty("user_id", proc.getUserID());
+                procObj.addProperty("user", proc.getUser());
+                procObj.addProperty("up_time", proc.getUpTime());
+                procObj.addProperty("thread_count", proc.getThreadCount());
+                procObj.addProperty("state", proc.getState().name());
+                procObj.addProperty("start_time", proc.getStartTime());
+                procObj.addProperty("soft_open_file_limit", proc.getSoftOpenFileLimit());
+                procObj.addProperty("resident_set_size", proc.getResidentSetSize());
+                procObj.addProperty("id", proc.getProcessID());
+                procObj.addProperty("cpu_load_cumulative", proc.getProcessCpuLoadCumulative());
+                procObj.addProperty("priority", proc.getPriority());
+                procObj.addProperty("path", proc.getPath());
+                procObj.addProperty("parent_id", proc.getParentProcessID());
+                procObj.addProperty("open_files", proc.getOpenFiles());
+                procObj.addProperty("minor_faults", proc.getMinorFaults());
+                procObj.addProperty("major_faults", proc.getMajorFaults());
+                procObj.addProperty("kernel_time", proc.getKernelTime());
+                procObj.addProperty("hard_open_file_limit", proc.getHardOpenFileLimit());
+                procObj.addProperty("group_id", proc.getGroupID());
+                procObj.addProperty("group", proc.getGroup());
+                procObj.addProperty("current_working_dir", proc.getCurrentWorkingDirectory());
+                procObj.addProperty("cmd_line", proc.getCommandLine());
+                procObj.addProperty("bytes_written", proc.getBytesWritten());
+                procObj.addProperty("bytes_read", proc.getBytesRead());
+                procObj.addProperty("name", proc.getName());
+                procObj.addProperty("context_switches", proc.getContextSwitches());
+                procObj.addProperty("bitness", proc.getBitness());
+                procObj.addProperty("affinity_mask", proc.getAffinityMask());
+                JsonArray threadDetails = new JsonArray();
+                for (OSThread t : proc.getThreadDetails()) {
+                    JsonObject tObj = new JsonObject();
+                    tObj.addProperty("user_time", t.getUserTime());
+                    tObj.addProperty("kernel_time", t.getKernelTime());
+                    tObj.addProperty("context_switches", t.getContextSwitches());
+                    tObj.addProperty("major_faults", t.getMajorFaults());
+                    tObj.addProperty("owning_process_id", t.getOwningProcessId());
+                    tObj.addProperty("state", t.getState().name());
+                    tObj.addProperty("minor_faults", t.getMinorFaults());
+                    tObj.addProperty("priority", t.getPriority());
+                    tObj.addProperty("start_mem_address", t.getStartMemoryAddress());
+                    tObj.addProperty("cpu_load_cumulative", t.getThreadCpuLoadCumulative());
+                    tObj.addProperty("name", t.getName());
+                    tObj.addProperty("id", t.getThreadId());
+                    tObj.addProperty("start_time", t.getStartTime());
+                    tObj.addProperty("up_time", t.getUpTime());
+
+                    threadDetails.add(tObj);
+                }
+                procObj.add("thread_details", threadDetails);
+
+                procs.add(procObj);
+            }
+            return procs;
+        });
+        entryMap.put("services", () -> {
+            JsonArray procs = new JsonArray();
+            for (OSService service : os.getServices()) {
+                JsonObject serviceObj = new JsonObject();
+                serviceObj.addProperty("name", service.getName());
+                serviceObj.addProperty("id", service.getProcessID());
+
+                procs.add(serviceObj);
+            }
+            return procs;
+        });
+        entryMap.put("sessions", () -> {
+            JsonArray procs = new JsonArray();
+            for (OSSession session : os.getSessions()) {
+                JsonObject sessionObj = new JsonObject();
+                sessionObj.addProperty("host", session.getHost());
+                sessionObj.addProperty("login_time", session.getLoginTime());
+                sessionObj.addProperty("terminal_device", session.getTerminalDevice());
+                sessionObj.addProperty("user_name", session.getUserName());
+
+                procs.add(sessionObj);
+            }
+            return procs;
+        });
 
         return Utils.serializeFromMap(entryMap, path);
     }

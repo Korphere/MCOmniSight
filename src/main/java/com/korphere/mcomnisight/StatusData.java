@@ -151,7 +151,7 @@ public class StatusData {
                 lastFullData = currentFullData;
 
             } catch (Exception e) {
-                plugin.getLogger().severe("配信エラー: " + e.getMessage());
+                plugin.getLogger().severe("Delivery error: " + e.getMessage());
             }
         });
     }
@@ -174,7 +174,7 @@ public class StatusData {
                     conn.send(jsonString);
                 }
             } catch (Exception e) {
-                plugin.getLogger().severe("初期データ送信エラー: " + e.getMessage());
+                plugin.getLogger().severe("Initial data transmission error: " + e.getMessage());
             }
         });
     }

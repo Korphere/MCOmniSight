@@ -91,11 +91,10 @@ processResources {
 
 modrinth {
     token = System.getenv("MODRINTH_TOKEN")
-    projectId = "oIoPe1pY"
+    projectId = project.hasProperty('oshi') ? "oIoPe1pY" : "XmhHyMD6"
 
-    def suffix = project.hasProperty('oshi') ? "full" : "lite"
-    versionNumber = "${project.version}-${suffix}"
-    versionName = "MCOmniSight ${project.version} (${suffix.capitalize()})"
+    versionNumber = "${project.version}"
+    versionName = "MCOmniSight ${project.version} (${project.hasProperty('oshi') ? 'Full' : 'Lite'})"
 
     uploadFile = tasks.shadowJar
 
