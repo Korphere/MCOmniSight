@@ -42,13 +42,23 @@ public class WorldDataProvider {
             dataDefinitions.put("chunks.loaded_count", () -> world.getLoadedChunks().length);
             dataDefinitions.put("chunks.chunk_count", world::getChunkCount);
 
-            dataDefinitions.put("entities.total", world::getEntityCount); // APIのメソッドを優先
+            dataDefinitions.put("entities.total", world::getEntityCount);
             dataDefinitions.put("entities.living_count", () -> world.getLivingEntities().size());
             dataDefinitions.put("entities.tile_entity_count", world::getTileEntityCount);
 
             dataDefinitions.put("world_border.size", () -> world.getWorldBorder().getSize());
             dataDefinitions.put("world_border.center_x", () -> world.getWorldBorder().getCenter().getX());
             dataDefinitions.put("world_border.center_z", () -> world.getWorldBorder().getCenter().getZ());
+
+            dataDefinitions.put("tile_entity_count", world::getTileEntityCount);
+
+            dataDefinitions.put("can_generate_structures", world::canGenerateStructures);
+
+            //これリストだからJsonArrayにして取り出すようにする。あとconfig.ymlに追記すること
+            //dataDefinitions.put("biome.biomes", () -> world.getBiomeProvider() != null ? world.getBiomeProvider().getBiomes(world) : "NONE");
+
+            dataDefinitions.put("is_day_time", world::isDayTime);
+            dataDefinitions.put("is_auto_save", world::isAutoSave);
 
             for (Map.Entry<String, Supplier<Object>> entry : dataDefinitions.entrySet()) {
                 if (plugin.getConfig().getBoolean(path + entry.getKey(), true)) {

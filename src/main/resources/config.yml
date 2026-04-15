@@ -397,6 +397,31 @@ features:
     fs_max_file_descriptors: false
     fs_open_file_descriptors: false
     fs_max_file_descriptors_per_process: false
+    fss: false
+    connections: false
+    tcp_v4_stats: false
+    tcp_v6_stats: false
+    udp_v4_stats: false
+    udp_v6_stats: false
+    np_host_name: false
+    np_domain_name: false
+    np_ipv4_default_gateway: false
+    np_ipv6_default_gateway: false
+    dns_servers: false
+    vi_build_number: false
+    vi_code_name: false
+    vi_version: false
+    bitness: false
+    process_count: false
+    process_id: false
+    sys_uptime: false
+    sys_boot_time: false
+    is_elevated: false
+    thread_count: false
+    thread_id: false
+    processes: false
+    services: false
+    sessions: false
 
 
   world_data:
@@ -409,6 +434,10 @@ features:
       is_hardcore: false
       allow_animals: false
       allow_monsters: false
+      tile_entity_count: false
+      can_generate_structures: false
+      is_day_time: false
+      is_auto_save: false
       time:
         game_time: false
         ticks: false
@@ -429,6 +458,7 @@ features:
         size: false
         center_x: false
         center_z: false
+
 
   events:
     types:
