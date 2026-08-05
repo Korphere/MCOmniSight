@@ -1,0 +1,13 @@
+dependencies {
+    implementation project(':omnisight-core')
+    compileOnly 'io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT'
+
+    testImplementation project(':omnisight-core')
+    testImplementation 'io.papermc.paper:paper-api:1.21.r-R0.1-SNAPSHOT'
+    testImplementation 'org.java-websocket:Java-WebSocket:1.5.3'
+    testImplementation 'com.google.code.gson:gson:2.10.1'
+}
+
+configurations {
+    testImplementation.extendsFrom(compileOnly)
+}

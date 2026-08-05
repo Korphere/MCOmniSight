@@ -10,117 +10,86 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
-    id("xyz.jpenilla.run-paper") version "2.3.1"
-    id "com.modrinth.minotaur" version "2.8.7"
-    //id "com.matthewprenger.cursegradle" version "1.4.0"
+    id 'xyz.jpenilla.run-paper' version '2.3.1' apply false
+    id 'com.modrinth.minotaur' version '2.8.7' apply false
+    id 'com.github.jk1.dependency-license-report' version '2.2'
+    id 'com.gradleup.shadow' version '8.3.5' apply false
 }
 
-group = 'com.korphere.mcomnisight'
-version = System.getenv("GITHUB_REF_NAME")?.replaceAll('^v', '') ?: '1.0.0'
-
-repositories {
-    mavenCentral()
-    maven {
-        name = "papermc-repo"
-        url = "https://repo.papermc.io/repository/maven-public/"
-    }
-}
-
-def includeOshi = project.hasProperty('oshi')
-
-dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
-    implementation 'org.java-websocket:Java-WebSocket:1.5.3'
-    compileOnly 'com.github.oshi:oshi-core:6.6.1'
-    if (includeOshi) {
-        implementation 'com.github.oshi:oshi-core:6.6.1'
-        implementation 'net.java.dev.jna:jna:5.13.0'
-        implementation 'net.java.dev.jna:jna-platform:5.13.0'
-    }
-}
-
-shadowJar {
-    relocate 'org.java_websocket', 'com.korphere.mcomnisight.libs.websocket'
-    if (includeOshi) {
-        relocate 'oshi', 'com.korphere.mcomnisight.libs.oshi'
-        relocate 'com.sun.jna', 'com.korphere.mcomnisight.libs.jna'
-        archiveClassifier.set('full')
-    } else {
-        archiveClassifier.set('lite')
-    }
-}
-
-tasks.build.dependsOn shadowJar
-
-tasks {
-  runServer {
-    // Configure the Minecraft version for our task.
-    // This is the only required configuration besides applying the plugin.
-    // Your plugin's jar (or shadowJar if present) will be used automatically.
-    minecraftVersion("1.21")
-  }
-}
-
-def targetJavaVersion = 21
-java {
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-    }
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        options.release.set(targetJavaVersion)
-    }
-}
-
-processResources {
-    def props = [version: version]
-    inputs.properties props
-    filteringCharset 'UTF-8'
-    filesMatching('plugin.yml') {
-        expand props
-    }
-}
-
-modrinth {
-    token = System.getenv("MODRINTH_TOKEN")
-    projectId = project.hasProperty('oshi') ? "oIoPe1pY" : "XmhHyMD6"
-
-    versionNumber = "${project.version}"
-    versionName = "MCOmniSight ${project.version} (${project.hasProperty('oshi') ? 'Full' : 'Lite'})"
-
-    uploadFile = tasks.shadowJar
-
-    additionalFiles = []
-
-    gameVersions = ["1.21"]
-    loaders = ["paper", "purpur"]
-    changelog = System.getenv("COMMIT_MESSAGE")
-    versionType = "release"
-}
-
-/*curseforge {
-    apiKey = System.getenv("CURSEFORGE_TOKEN") ?: ""
-    project {
-        id = '1494154'
-        releaseType = 'release'
-        addGameVersion '1.21'
-        addGameVersion 'Paper'
-        addGameVersion 'Purpur'
-
-        mainArtifact(layout.buildDirectory.file("libs/MCOmniSight-${project.version}-full.jar")) {
-            displayName = "MCOmniSight ${project.version} (Full)"
+allprojects {
+    repositories {
+        mavenCentral()
+        maven {
+            name = "papermc"
+            url = uri("https://repo.papermc.io/repository/maven-public/")
         }
-
-        addArtifact(layout.buildDirectory.file("libs/MCOmniSight-${project.version}-lite.jar")) {
-            displayName = "MCOmniSight ${project.version} (Lite)"
+        maven {
+            name = "jitpack"
+            url = uri("https://jitpack.io")
         }
     }
-}*/
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'com.gradleup.shadow'
+
+    group = 'com.korphere.mcomnisight'
+    version = System.getenv("GITHUB_REF_NAME")?.replaceAll('^v', '') ?: '1.0.0'
+
+    ext {
+        includeOshi = project.hasProperty('oshi')
+    }
+
+    dependencies {
+        implementation 'com.google.code.gson:gson:2.10.1'
+        compileOnly 'org.jetbrains:annotations:24.1.0'
+
+        implementation 'org.java-websocket:Java-WebSocket:1.5.6'
+        compileOnly 'com.github.oshi:oshi-core:6.6.1'
+        if (project.includeOshi) {
+            implementation 'com.github.oshi:oshi-core:6.6.1'
+            implementation 'net.java.dev.jna:jna:5.13.0'
+            implementation 'net.java.dev.jna:jna-platform:5.13.0'
+        }
+        testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+        testImplementation 'org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.110.0'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    shadowJar {
+        relocate 'org.java_websocket', 'com.korphere.mcomnisight.libs.websocket'
+        if (project.includeOshi) {
+            relocate 'oshi', 'com.korphere.mcomnisight.libs.oshi'
+            relocate 'com.sun.jna', 'com.korphere.mcomnisight.libs.jna'
+            archiveClassifier.set('full')
+        } else {
+            archiveClassifier.set('lite')
+        }
+    }
+
+    tasks.build {
+        dependsOn tasks.shadowJar
+    }
+
+    def targetJavaVersion = 21
+    java {
+        def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+        sourceCompatibility = javaVersion
+        targetCompatibility = javaVersion
+        if (JavaVersion.current() < javaVersion) {
+            toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+        }
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+        if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+            options.release.set(targetJavaVersion)
+        }
+    }
+}
