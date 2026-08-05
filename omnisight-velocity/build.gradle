@@ -1,6 +1,23 @@
+apply plugin: 'com.modrinth.minotaur'
+
 dependencies {
     implementation project(':omnisight-core')
 
     compileOnly 'com.velocitypowered:velocity-api:3.3.0-SNAPSHOT'
     annotationProcessor 'com.velocitypowered:velocity-api:3.3.0-SNAPSHOT'
+}
+
+modrinth {
+    token = System.getenv("MODRINTH_TOKEN")
+    projectId = project.hasProperty('oshi') ? "oIoPe1pY" : "XmhHyMD6"
+
+    versionNumber = "${project.version}"
+    versionName = "MCOmniSight Velocity ${project.version} (${project.hasProperty('oshi') ? 'Full' : 'Lite'})"
+
+    uploadFile = tasks.shadowJar
+
+    gameVersions = ["1.21", "1.21.1", "1.21.2", "1.21.3", "1.21.4"]
+    loaders = ["velocity"]
+    changelog = System.getenv("COMMIT_MESSAGE")
+    versionType = "release"
 }

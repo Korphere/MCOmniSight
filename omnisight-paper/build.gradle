@@ -1,13 +1,39 @@
+apply plugin: 'com.modrinth.minotaur'
+
 dependencies {
     implementation project(':omnisight-core')
     compileOnly 'io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT'
 
     testImplementation project(':omnisight-core')
-    testImplementation 'io.papermc.paper:paper-api:1.21.r-R0.1-SNAPSHOT'
-    testImplementation 'org.java-websocket:Java-WebSocket:1.5.3'
+    testImplementation 'io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT'
+    testImplementation 'org.java-websocket:Java-WebSocket:1.5.6'
     testImplementation 'com.google.code.gson:gson:2.10.1'
 }
 
 configurations {
     testImplementation.extendsFrom(compileOnly)
+}
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}
+
+modrinth {
+    token = System.getenv("MODRINTH_TOKEN")
+    projectId = project.hasProperty('oshi') ? "oIoPe1pY" : "XmhHyMD6"
+
+    versionNumber = "${project.version}"
+    versionName = "MCOmniSight Paper ${project.version} (${project.hasProperty('oshi') ? 'Full' : 'Lite'})"
+
+    uploadFile = tasks.shadowJar
+
+    gameVersions = ["1.21", "1.21.1", "1.21.2", "1.21.3", "1.21.4"]
+    loaders = ["paper", "purpur"]
+    changelog = System.getenv("COMMIT_MESSAGE")
+    versionType = "release"
 }
