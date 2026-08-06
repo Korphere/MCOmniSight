@@ -24,7 +24,7 @@ import static com.korphere.mcomnisight.StatusData.plugin;
 @Plugin(
         id = "mcomnisight",
         name = "MCOmniSight",
-        version = "2.1.1",
+        version = "2.1.3",
         description = "Let's watch Real-time server status.",
         authors = {"KoHaRxnP", "Korphere"}
 )
