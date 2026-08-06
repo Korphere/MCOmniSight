@@ -98,7 +98,6 @@ public class OmniSightTcpServer implements NetworkServer {
     public class ClientHandler implements Runnable {
         private final Socket socket;
         private OutputStream out;
-        private BufferedReader in;
         private boolean authorized = false;
 
         public ClientHandler(Socket socket) {
@@ -114,7 +113,7 @@ public class OmniSightTcpServer implements NetworkServer {
         public void run() {
             try {
                 out = socket.getOutputStream();
-                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
                 String authLine = in.readLine();
                 if (authLine != null && authLine.equals("AUTH " + apiKey)) {

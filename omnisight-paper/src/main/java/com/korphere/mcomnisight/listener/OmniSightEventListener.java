@@ -26,8 +26,11 @@ public class OmniSightEventListener implements Listener {
 
     private void dispatch(String key, JsonObject packet) {
         if (plugin.getConfig().getBoolean(path + key, false)) {
-            if (plugin.getWsServer() != null) {
+            if (plugin.getWsServer() != null && plugin.getConfig().getBoolean("send.ws", false)) {
                 plugin.getWsServer().broadcast(packet.toString());
+            }
+            if (plugin.getTcpServer() != null && plugin.getConfig().getBoolean("send.tcp", false)) {
+                plugin.getTcpServer().broadcast(packet.toString());
             }
         }
     }

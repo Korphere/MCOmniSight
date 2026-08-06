@@ -157,6 +157,39 @@ public class StatusData {
         });
     }
 
+    public static void sendUpdate(OmniSightTcpServer server, boolean useGzip) {
+        JsonObject currentFullData = collect();
+
+        final JsonObject previousData = lastFullData;
+
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            try {
+                JsonObject deltaData = getDelta(currentFullData, previousData);
+
+                deltaData.addProperty("packet_type", "DELTA");
+                deltaData.addProperty("_timestamp", System.currentTimeMillis());
+
+                if (deltaData.isEmpty() || server.getConnectedClientsCount() == 0) {
+                    lastFullData = currentFullData;
+                    return;
+                }
+
+                if (useGzip) {
+                    byte[] payload = serializeWithGzip(deltaData, true);
+                    server.broadcast(payload);
+                } else {
+                    String jsonString = deltaData.toString();
+                    server.broadcast(jsonString);
+                }
+
+                lastFullData = currentFullData;
+
+            } catch (Exception e) {
+                plugin.getLogger().severe("Delivery error: " + e.getMessage());
+            }
+        });
+    }
+
     public static void sendInitialFullData(org.java_websocket.WebSocket conn, boolean useGzip) {
         JsonObject currentData = collect();
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {

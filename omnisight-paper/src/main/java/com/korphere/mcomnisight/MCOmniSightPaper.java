@@ -4,6 +4,7 @@ import com.korphere.mcomnisight.listener.OmniSightEventListener;
 import com.korphere.mcomnisight.network.InternalBridgeClient;
 import com.korphere.mcomnisight.provider.MetricsRunner;
 import com.korphere.mcomnisight.server.OmniSightServer;
+import com.korphere.mcomnisight.server.OmniSightTcpServer;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -13,6 +14,7 @@ import static com.korphere.mcomnisight.StatusData.plugin;
 public final class MCOmniSightPaper extends JavaPlugin {
 
     private OmniSightServer wsServer;
+    private OmniSightTcpServer tcpServer;
     private BukkitRunnable updateTask;
     private InternalBridgeClient bridgeClient;
     private VConnection cmode;
@@ -59,6 +61,13 @@ public final class MCOmniSightPaper extends JavaPlugin {
         getLogger().info("WebSocket Server started on port: " + port);
     }
 
+    private void startTcpServer() {
+        int port = getConfig().getInt("tcp-port", 8889);
+        tcpServer = new OmniSightTcpServer(port, plugin);
+        tcpServer.start();
+        getLogger().info("TCP Server started on port: " + port);
+    }
+
     private void initProxySender() {
         bridgeClient = new InternalBridgeClient(MCOmniSightPaper.this);
     }
@@ -82,8 +91,11 @@ public final class MCOmniSightPaper extends JavaPlugin {
                 updateTask = new BukkitRunnable() {
                     @Override
                     public void run() {
-                        if (wsServer != null) {
+                        if (wsServer != null && getConfig().getBoolean("send.ws", false)) {
                             StatusData.sendUpdate(wsServer, useGzip);
+                        }
+                        if (tcpServer != null && getConfig().getBoolean("send.tcp", false)) {
+                            StatusData.sendUpdate(tcpServer, useGzip);
                         }
                     }
                 };
@@ -121,13 +133,21 @@ public final class MCOmniSightPaper extends JavaPlugin {
     }
 
     private void cleanupNetwork() {
-        if (wsServer != null) {
+        if (wsServer != null && getConfig().getBoolean("send.ws", false)) {
             try {
                 wsServer.stop(1000);
             } catch (InterruptedException e) {
                 getLogger().severe("WebSocket server stop error: " + e.getMessage());
             }
             wsServer = null;
+        }
+        if (tcpServer != null && getConfig().getBoolean("send.tcp", false)) {
+            try {
+                tcpServer.stop(1000);
+            } catch (InterruptedException e) {
+                getLogger().severe("TCP server stop error: " + e.getMessage());
+            }
+            tcpServer = null;
         }
 
         if (bridgeClient != null) {
@@ -144,6 +164,8 @@ public final class MCOmniSightPaper extends JavaPlugin {
     public OmniSightServer getWsServer() {
         return wsServer;
     }
+
+    public OmniSightTcpServer getTcpServer() { return tcpServer; }
 
     public void setupConfig() {
         saveDefaultConfig();
@@ -178,7 +200,10 @@ public final class MCOmniSightPaper extends JavaPlugin {
                 }
 
                 getLogger().info("Failed to connect to Velocity. Falling back to STANDALONE mode.");
-                startWebSocketServer();
+                if (getConfig().getBoolean("send.ws", false))
+                    startWebSocketServer();
+                if (getConfig().getBoolean("send.tcp", false))
+                    startTcpServer();
             }
         }
     }

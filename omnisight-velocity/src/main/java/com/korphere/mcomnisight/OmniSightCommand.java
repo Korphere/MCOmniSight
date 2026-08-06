@@ -45,14 +45,14 @@ public class OmniSightCommand implements SimpleCommand {
                 }
 
                 ConfigManager config = plugin.getConfigManager();
-                int port = config.getWebSocketPort();
+                int wsPort = config.getWebSocketPort();
 
                 OmniSightServer wsServer = plugin.getWsServer();
                 int clients = (wsServer != null) ? wsServer.getConnectedClientsCount() : 0;
 
                 sender.sendMessage(Component.text("--- MCOmniSight Status ---", NamedTextColor.AQUA));
-                sender.sendMessage(Component.text("➤ WebSocket Port: " + port, NamedTextColor.WHITE));
-                sender.sendMessage(Component.text("➤ Active Clients: " + clients, NamedTextColor.GREEN));
+                sender.sendMessage(Component.text("➤ WebSocket Websocket Port: " + wsPort, NamedTextColor.WHITE));
+                sender.sendMessage(Component.text("➤ Active Websocket Clients: " + clients, NamedTextColor.GREEN));
                 sender.sendMessage(Component.text("➤ Gzip Enabled: " + config.isGzipEnabled(), NamedTextColor.YELLOW));
                 sender.sendMessage(Component.text("➤ Whitelist Enabled: " + config.isWhitelistEnabled(), NamedTextColor.YELLOW));
                 break;

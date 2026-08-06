@@ -27,6 +27,9 @@ public class ConfigManager {
     private boolean gzipEnabled = true;
     private int updateIntervalTicks = 20;
 
+    private boolean ws = true;
+    private boolean tcp = true;
+
     private String apiKey = "";
     private String connectionMode = "DIRECT";
     private boolean whitelistEnabled = false;
@@ -69,6 +72,9 @@ public class ConfigManager {
             this.gzipEnabled = configNode.node("gzip-enabled").getBoolean(true);
             this.updateIntervalTicks = configNode.node("update-interval-ticks").getInt(20);
 
+            this.ws = configNode.node("send","ws").getBoolean(true);
+            this.tcp = configNode.node("send","tcp").getBoolean(true);
+
             this.apiKey = configNode.node("api-key").getString("");
             this.connectionMode = configNode.node("connection-mode").getString("DIRECT");
             this.whitelistEnabled = configNode.node("whitelist", "enabled").getBoolean(false);
@@ -92,6 +98,8 @@ public class ConfigManager {
     public String getVHost() { return vHost; }
     public boolean isGzipEnabled() { return gzipEnabled; }
     public int getUpdateIntervalTicks() { return updateIntervalTicks; }
+    public boolean getWsEnable() { return ws; }
+    public boolean getTcpEnable() { return tcp; }
     public String getApiKey() { return apiKey; }
     public String getConnectionMode() { return connectionMode; }
     public boolean isWhitelistEnabled() { return whitelistEnabled; }

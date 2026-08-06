@@ -65,11 +65,11 @@ public class InternalBridgeServer {
                 String output = combinedJson.toString();
 
                 if (output != null && !output.isBlank()) {
-                    if (plugin.getWsServer() != null) {
+                    if (plugin.getWsServer() != null && plugin.getConfigManager().getBoolean("send.ws", false)) {
                         plugin.getWsServer().broadcast(output);
                     }
 
-                    if (plugin.getTcpServer() != null) {
+                    if (plugin.getTcpServer() != null && plugin.getConfigManager().getBoolean("send.tcp", false)) {
                         plugin.getTcpServer().broadcast(output);
                     }
                 }

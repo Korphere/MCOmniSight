@@ -4,6 +4,22 @@ proxy:
 
 api-key: 'your-secret-key-here'
 
+websocket-port: 8887
+tcp-port: 8889
+
+gzip-enabled: true
+
+update-interval-ticks: 20
+
+connection-mode: DIRECT
+
+whitelist:
+  allowed-ips:
+
+send:
+  ws: true
+  tcp: true
+
 features:
   standard_v:
     enabled: true

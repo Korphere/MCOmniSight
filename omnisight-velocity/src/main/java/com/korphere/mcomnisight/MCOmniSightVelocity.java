@@ -19,11 +19,12 @@ import org.slf4j.Logger;
 import java.time.Duration;
 
 import static com.korphere.mcomnisight.StatusData.oshiAvailable;
+import static com.korphere.mcomnisight.StatusData.plugin;
 
 @Plugin(
         id = "mcomnisight",
         name = "MCOmniSight",
-        version = "2.1.0",
+        version = "2.1.1",
         description = "Let's watch Real-time server status.",
         authors = {"KoHaRxnP", "Korphere"}
 )
@@ -114,8 +115,11 @@ public final class MCOmniSightVelocity {
 
         updateTask = server.getScheduler()
                 .buildTask(this, () -> {
-                    if (wsServer != null) {
+                    if (wsServer != null && plugin.getConfigManager().getBoolean("send.ws", false)) {
                         StatusData.sendUpdate(wsServer, useGzip);
+                    }
+                    if (tcpServer != null && plugin.getConfigManager().getBoolean("send.tcp", false)) {
+                        StatusData.sendUpdate(tcpServer, useGzip);
                     }
                 })
                 .repeat(Duration.ofMillis(intervalMillis))

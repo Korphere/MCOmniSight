@@ -40,11 +40,15 @@ public class OmniSightCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 int port = plugin.getConfig().getInt("websocket-port");
-                int clients = plugin.getWsServer().getConnectedClientsCount();
+                int wsClients = plugin.getWsServer().getConnectedClientsCount();
+                int tcpClients = plugin.getTcpServer().getConnectedClientsCount();
 
                 sender.sendMessage(Component.text("--- MCOmniSight Status ---", NamedTextColor.AQUA));
                 sender.sendMessage(Component.text("➤ WebSocket Port: " + port, NamedTextColor.WHITE));
-                sender.sendMessage(Component.text("➤ Active Clients: " + clients, NamedTextColor.GREEN));
+                if (plugin.getConfig().getBoolean("send.ws", false))
+                    sender.sendMessage(Component.text("➤ Active WebSocket Clients: " + wsClients, NamedTextColor.GREEN));
+                if (plugin.getConfig().getBoolean("send.tcp", false))
+                    sender.sendMessage(Component.text("➤ Active TCP Clients: " + tcpClients, NamedTextColor.GREEN));
                 sender.sendMessage(Component.text("➤ Enabled Features:", NamedTextColor.YELLOW));
 
                 org.bukkit.configuration.ConfigurationSection features = plugin.getConfig().getConfigurationSection("features");

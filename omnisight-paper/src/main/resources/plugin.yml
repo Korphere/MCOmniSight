@@ -1,5 +1,5 @@
 name: MCOmniSight
-version: '2.1.0'
+version: '2.1.1'
 main: com.korphere.mcomnisight.MCOmniSightPaper
 api-version: '1.21'
 load: STARTUP

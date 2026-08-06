@@ -2,6 +2,10 @@
 # WebSocket server port number
 websocket-port: 8887
 
+# TCP サーバーのポート番号
+# TCP server port number
+tcp-port: 8889
+
 # データの圧縮 (Gzip) を有効にするか
 # 通信量を抑えたい場合は true 推奨
 # Enable data compression (Gzip)
@@ -55,6 +59,10 @@ velocity-connection: AUTO
 proxy:
   port: 8888
   host: "127.0.0.1"
+
+send:
+  ws: true
+  tcp: true
 
 features:
   standard:

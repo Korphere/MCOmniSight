@@ -132,8 +132,7 @@ public class OmniSightTcpServer implements NetworkServer {
                     StatusData.sendInitialFullDataTcp(this, useGzip);
 
                     String line;
-                    while ((line = in.readLine()) != null) {
-                    }
+                    while ((line = in.readLine()) != null) {}
                 } else {
                     plugin.getLogger().warn("[TCP] Auth failed for: {}", socket.getRemoteSocketAddress());
                     close();
